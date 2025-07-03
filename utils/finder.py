@@ -1,12 +1,22 @@
 from typing import List, Optional
 
-from models import BillType
-from schemas import Resolution
+from sqlalchemy import Engine
+from sqlalchemy.orm import Session
+
+from config import biller_engine, log_console_level, log_file_level
+from config.logger_config import setup_logger
+from models import QUERY_BILLER_MAX_RESOLUTION_ID
 
 
-def find_bill_type(prefix: str, store: str) -> Optional[BillType]:
-    pass
+logger = setup_logger(__name__, console_level=log_console_level, file_level=log_file_level)
 
 
-def find_bill_types(resolutions: List[Resolution]) -> Optional[List[BillType]]:
-    pass
+def get_max_resolution_id(engine: Engine = biller_engine) -> Optional[int]:
+    """Recupera el identificador máximo de la tabla `factura.resoluciones` en la base de datos del Facturador."""
+    try:
+        with Session(engine) as session:
+            stmt = session.execute(QUERY_BILLER_MAX_RESOLUTION_ID).first()
+            return stmt[0] if stmt else None
+    except Exception as e:
+        logger.exception(f"An unexpected error occurred while loading the data: {e}")
+    return None

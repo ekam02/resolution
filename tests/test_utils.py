@@ -1,25 +1,25 @@
 from config import repository
 from schemas import Resolution
 from utils.uploader import upload_resolutions
-from utils.finder import find_bill_type, find_bill_types
+from utils.finder import get_max_resolution_id
 
 
 class TestUploader:
-    # La información deberá estar en el directorio de entrada
     def test_upload_resolutions(self):
+        """Comprueba que se cargan correctamente las resoluciones desde los archivos CSV o XLSX en el directorio de
+        entrada.
+        """
         resolutions = upload_resolutions()
         assert isinstance(resolutions, list)
-        assert isinstance(resolutions[0], Resolution)
+        assert all([isinstance(resolution, Resolution) for resolution in resolutions])
 
     def test_dont_upload_resolutions(self):
+        """Comprueba que no se cargan las resoluciones si no hay archivos CSV o XLSX en el directorio de entrada."""
         resolutions = upload_resolutions(repository / "logs")
         assert resolutions is None
 
 class TestFinder:
-    def test_find_bill_type(self):
-        bill_type = find_bill_type(prefix="", store="")
-        pass
-
-    def test_find_bill_types(self):
-        bill_types = find_bill_types(resolutions=[])
-        pass
+    def test_get_max_resolution_id(self):
+        """Comprueba que se pueda obtener el máximo id de la tabla `factura.resoluciones`."""
+        max_id = get_max_resolution_id()
+        assert isinstance(max_id, int)
