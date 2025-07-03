@@ -1,15 +1,27 @@
-from typing import Optional
-
-from sqlmodel import SQLModel, Field
+from sqlalchemy import text
 
 
-class BillType(SQLModel, table=True):
-    __tablename__ = "tipos_fact"
-    id: int = Field(alias="c_tipo_fac", primary_key=True)
-    desc: str = Field(alias="d_tipo_fac")
-    abbreviation: str = Field(alias="c_abrev")
-    enabled: bool = Field(alias="s_activo", default=True)
-    store: str = Field(alias="n_concepto_fact")
-    invoice_seq: int = Field(alias="n_consecutivo", default=0)
-    memo_seq: int = Field(alias="n_consecutivo_nc", default=0)
-    pos: Optional[str] = Field(alias="nro_terminal", default=None)
+# Usado para recuperar el número de la tienda asociado al prefijo.
+QUERY_BILLER_STORE_BY_PREFIX = text(
+    """SELECT
+    tf.c_tipo_fac,
+    tf.n_concepto_fact::INT8
+FROM
+    factura.tipos_fact tf
+WHERE
+    tf.c_abrev = :prefix"""
+)
+
+
+# Usado para recuperar el identificador más grande asignado en la tabla `factura.resoluciones`.
+QUERY_BILLER_MAX_RESOLUTION_ID = text(
+    """SELECT MAX(r.c_resolucion)
+FROM factura.resoluciones AS r"""
+)
+
+
+# Usado para construir la transacción de inserción sobre la tabla `factura.resoluciones`.
+INSERT_BILLER_RESOLUTION = """INSERT INTO factura.resoluciones
+(c_resolucion, c_empresa, c_origen, c_prefijo, n_resolucion, n_numero_inicial, n_numero_final, f_resolucion, f_vigencia_desde, f_vigencia_hasta, d_resolucion,llave_tecnica)
+VALUES
+{}"""
