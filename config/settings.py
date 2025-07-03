@@ -36,6 +36,8 @@ class AppSettings:
         engine_max_overflow = cfg.get("engine_max_overflow", 10)
         self.output_file = cfg.get("output_file")
         self.stores = cfg.get("stores")
+        self.data_translation = cfg.get("data_translation")
+        self.document_type_translation = cfg.get("document_type_translation")
 
         self.output_dir = self.repository / "output"
         if not self.output_dir.exists():
