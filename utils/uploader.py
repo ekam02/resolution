@@ -11,10 +11,8 @@ from schemas import Resolution
 logger = setup_logger(__name__, console_level=log_console_level, file_level=log_file_level)
 
 
-# La idea es cargar la información siempre que se consiga un fichero CSV o XLSX
 def upload_resolutions(supply: Path = input_dir) -> Optional[List[Resolution]]:
-    # Listar solo los archivos que terminan en CSV y XLSX
-    # ¿Y si no hay archivos?
+    """Carga las resoluciones desde los archivos CSV o XLSX en el directorio de entrada."""
     try:
         files = [file for file in supply.iterdir() if file.is_file()]
         files = [file for file in files if file.suffix in (".csv", ".xlsx")]
