@@ -22,3 +22,5 @@ output_file = "resolutions.sql"
 "Nota de credito" = 9
 "Factura de contingencia" = 13
 "Nota de debito" = 15
+"Devolucion" = 9
+"Devolución" = 9

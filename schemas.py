@@ -39,11 +39,11 @@ class Resolution(SQLModel):
 
     @classmethod
     def is_uuid(cls, uuid: str) -> bool:
-        return bool(re.match(r"^[0-9a-z]{64}$", uuid))
+        return bool(re.match(r"^[0-9a-z]{10,64}$", uuid))
 
     @model_validator(mode='before')
     @classmethod
-    def cast_date(cls, data: Any) -> Any:
+    def cast_data(cls, data: Any) -> Any:
         if not len(data) == 9:
             raise ValueError(f"Se esperan 9 columnas, pero se recibieron {len(data)}.")
 
@@ -86,7 +86,7 @@ class Resolution(SQLModel):
             if not data["doc_type"] in document_type_translation:
                 raise ValueError(
                     f"Se espera que 'doc_type' tenga uno de los valores {document_type_translation.keys()}, pero se "
-                    f"recibió el valor {data['doc_type']}."
+                    f"recibió el valor '{data['doc_type']}'."
                 )
             data["doc_type"] = document_type_translation[data["doc_type"]]
         else:
@@ -208,7 +208,7 @@ class Resolution(SQLModel):
                     f"Se espera que 'technical_key' sea de tipo 'str', pero se recibió el tipo "
                     f"'{type(data["technical_key"]).__name__}'."
                 )
-            if not re.match(r"^[0-9a-z]{64}$", data["technical_key"]):
+            if not cls.is_uuid(data["technical_key"]):
                 raise ValueError(
                     "Se espera que 'technical_key' tenga como patrón '^[0-9a-z]{64}$' pero se recibió el valor "
                     f"'{data['technical_key']}'."
@@ -235,6 +235,7 @@ class Resolution(SQLModel):
                 f"{self.resolution}, "
                 f"{self.start_consecutive}, "
                 f"{self.end_consecutive}, "
+                f"'{self.start_date}', "
                 f"'{self.start_date}', "
                 f"'{self.end_date}', "
                 f"'{self.get_resolution_message()}', "
