@@ -22,7 +22,7 @@ def main():
         logger.info("Se han calculado los valores para la inserción de las nuevas resoluciones.")
         output_text = INSERT_BILLER_RESOLUTION.format(",\n".join(resolutions))
         logger.info("Se han agregado los valores sobre la inserción de las nuevas resoluciones.")
-        with open(output_dir / "resolution.sql", "+w") as file:
+        with open(output_dir / "resolution.sql", "+w", encoding="utf-8") as file:
             file.write(output_text)
         logger.info("Se han generado un fichero SQL con la transacción para la inserción de las nuevas resoluciones.")
     except Exception as e:
