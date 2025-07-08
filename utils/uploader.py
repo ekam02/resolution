@@ -11,24 +11,24 @@ from schemas import Resolution
 logger = setup_logger(__name__, console_level=log_console_level, file_level=log_file_level)
 
 
-def upload_resolutions(supply: Path = input_dir) -> Optional[List[Resolution]]:
+def upload_resolutions(supply_file: Path) -> Optional[List[Resolution]]:
     """Carga las resoluciones desde los archivos CSV o XLSX en el directorio de entrada."""
     try:
-        files = [file for file in supply.iterdir() if file.is_file()]
-        files = [file for file in files if file.suffix in (".csv", ".xlsx")]
-        resolutions_data = []
-        if not files:
-            raise FileNotFoundError("No CSV or XLSX files were found in the input folder.")
-        for file in files:
-            if file.suffix == ".csv":
-                resolutions_data.append(read_csv(file, dtype=str))
-            else:
-                resolutions_data.append(read_excel(file, dtype=str))
-        resolutions_df = concat(resolutions_data)
+        if not isinstance(supply_file, Path):
+            raise TypeError("The 'supply_file' argument must be a Path object.")
+        if not supply_file.exists():
+            raise FileNotFoundError(f"No file found at {supply_file}")
+        if supply_file.suffix == ".csv":
+            resolutions_df = read_csv(supply_file, dtype=str)
+        else:
+            resolutions_df = read_excel(supply_file, dtype=str)
         return [Resolution(**row.to_dict()) for _, row in resolutions_df.iterrows()]
+    except TypeError:
+        logger.exception("The 'supply_file' argument must be a Path object.")
+    except FileNotFoundError:
+        logger.exception("No file found at the specified path.")
     except Exception as e:
         logger.error(f"An unexpected error occurred while loading the data: {e}")
     finally:
-        del files
-        del resolutions_data
+        del resolutions_df
     return None
