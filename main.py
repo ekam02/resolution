@@ -26,7 +26,7 @@ def main():
             file.write(output_text)
         logger.info("Se han generado un fichero SQL con la transacción para la inserción de las nuevas resoluciones.")
     except Exception as e:
-        logger.exception(f"An unexpected error occurred: {e}")
+        logger.error(f"An unexpected error occurred: {e}")
 
 
 if __name__ == "__main__":

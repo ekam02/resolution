@@ -18,5 +18,5 @@ def get_max_resolution_id(engine: Engine = biller_engine) -> Optional[int]:
             stmt = session.execute(QUERY_BILLER_MAX_RESOLUTION_ID).first()
             return stmt[0] if stmt else None
     except Exception as e:
-        logger.exception(f"An unexpected error occurred while loading the data: {e}")
+        logger.error(f"An unexpected error occurred while loading the data: {e}")
     return None

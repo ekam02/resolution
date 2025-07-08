@@ -27,7 +27,7 @@ def upload_resolutions(supply: Path = input_dir) -> Optional[List[Resolution]]:
         resolutions_df = concat(resolutions_data)
         return [Resolution(**row.to_dict()) for _, row in resolutions_df.iterrows()]
     except Exception as e:
-        logger.exception(f"An unexpected error occurred while loading the data: {e}")
+        logger.error(f"An unexpected error occurred while loading the data: {e}")
     finally:
         del files
         del resolutions_data
