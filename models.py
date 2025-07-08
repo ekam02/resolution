@@ -20,8 +20,21 @@ FROM factura.resoluciones AS r"""
 )
 
 
+QUERY_BILLER_PREVIOUS_RESOLUTION_ID = text(
+    """SELECT r.c_resolucion
+FROM factura.resoluciones AS r
+WHERE
+    r.c_prefijo = :c_prefijo
+  AND r.f_vigencia_hasta > NOW()"""
+)
+
+
 # Usado para construir la transacción de inserción sobre la tabla `factura.resoluciones`.
 INSERT_BILLER_RESOLUTION = """INSERT INTO factura.resoluciones
 (c_resolucion, c_empresa, c_origen, c_prefijo, n_resolucion, n_numero_inicial, n_numero_final, f_resolucion, f_vigencia_desde, f_vigencia_hasta, d_resolucion,llave_tecnica)
 VALUES
-{}"""
+{};"""
+
+
+UPDATE_BILLER_RESOLUTION = """UPDATE factura.resoluciones SET f_vigencia_hasta = {} WHERE c_prefijo = {};
+"""

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from sqlmodel import SQLModel
 
 from config import biller_engine, data_translation, document_type_translation
-from models import QUERY_BILLER_STORE_BY_PREFIX
+from models import QUERY_BILLER_STORE_BY_PREFIX, QUERY_BILLER_PREVIOUS_RESOLUTION_ID
 
 
 class StoreError(Exception):
@@ -28,6 +28,7 @@ class Resolution(SQLModel):
     end_consecutive: int
     technical_key: Optional[str] = None
     bill_type_id: Optional[int] = None  # ForeignKey `tipos_fact`
+    previous_resolution_id: Optional[int] = None
 
     @classmethod
     def is_resolution(cls, resolution: str) -> bool:
@@ -108,8 +109,10 @@ class Resolution(SQLModel):
             )
         if isinstance(data["end_date"], str):
             data["end_date"] = parse(data["end_date"])
-        elif isinstance(data["end_date"], datetime):
-            data["end_date"] = data["end_date"]
+        data["end_date"] = datetime(
+            data["end_date"].year, data["end_date"].month, data["end_date"].day,
+            23, 59, 59, 999999
+        )
 
         # Evalúa atributo `start_date`
         if not data.get("start_date"):
@@ -161,6 +164,11 @@ class Resolution(SQLModel):
                     )
                 data["store"] = stmt[1] if stmt else None
                 data["bill_type_id"] = stmt[0] if stmt else None
+                del stmt
+                stmt = session.execute(QUERY_BILLER_PREVIOUS_RESOLUTION_ID, {"c_prefijo": data["bill_type_id"]}).first()
+                if stmt:
+                    data["previous_resolution_id"] = stmt[0]
+                del stmt
 
         # Evalúa atributo `end_consecutive`
         if not type(data.get("end_consecutive")) in (int, str):
