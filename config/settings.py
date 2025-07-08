@@ -47,6 +47,13 @@ class AppSettings:
         if not self.input_dir.exists():
             self.input_dir.mkdir(parents=True)
 
+        self.supply_file = self.input_dir / cfg.get("supply_file")
+        # El atributo 'supply_file' fue diligenciado en 'config.toml'
+        if self.supply_file:
+            # Se busca comprobar si el valor del atributo existe realmente en el directorio de entrada.
+            if not self.supply_file.exists():
+                raise FileNotFoundError(f"No file found at {self.supply_file}")
+
         logger = setup_logger(__name__, console_level=self.log_console_level, file_level=self.log_file_level)
         logger.debug("Loading config settings")
 

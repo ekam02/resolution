@@ -3,6 +3,7 @@ log_file_level = 10
 engine_pool_size = 5
 engine_max_overflow = 10
 output_file = "resolutions.sql"
+supply_file = ""  # Supply File Name
 
 # Estructura de mapeo para crear objetos Resolution
 [data_translation]
