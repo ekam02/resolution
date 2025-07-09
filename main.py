@@ -35,7 +35,7 @@ def main(_supply_file: Path = supply_file):
 
                 # Crea un conjunto con los números de las tiendas actuales
                 logger.info("Inicia la escritura de instrucciones para actualizar las resoluciones de devoluciones en tiendas.")
-                store_set = set([(r.store, r.resolution, r.start_date, r.end_date) for r in resolutions if resolution.doc_type == 5])
+                store_set = set([(r.store, r.resolution, r.start_date, r.end_date) for r in resolutions if r.doc_type == 5])
                 store_list = list(store_set)
                 del store_set
                 for s in store_list:
