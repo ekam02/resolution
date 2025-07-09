@@ -2,7 +2,7 @@ log_console_level = 10
 log_file_level = 10
 engine_pool_size = 5
 engine_max_overflow = 10
-output_file = "resolutions.sql"
+output_file = ""  # Output File Name
 supply_file = ""  # Supply File Name
 
 # Estructura de mapeo para crear objetos Resolution
@@ -25,3 +25,5 @@ supply_file = ""  # Supply File Name
 "Nota de debito" = 15
 "Devolucion" = 9
 "Devolución" = 9
+"13" = 13
+"5" = 5

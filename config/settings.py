@@ -34,7 +34,6 @@ class AppSettings:
         self.log_file_level = cfg.get("log_file_level", 30)
         engine_pool_size = cfg.get("engine_pool_size", 5)
         engine_max_overflow = cfg.get("engine_max_overflow", 10)
-        self.output_file = cfg.get("output_file")
         self.stores = cfg.get("stores")
         self.data_translation = cfg.get("data_translation")
         self.document_type_translation = cfg.get("document_type_translation")
@@ -42,6 +41,8 @@ class AppSettings:
         self.output_dir = self.repository / "output"
         if not self.output_dir.exists():
             self.output_dir.mkdir(parents=True)
+
+        self.output_file = self.output_dir / cfg.get("output_file")
 
         self.input_dir = self.repository / "input"
         if not self.input_dir.exists():

@@ -11,3 +11,4 @@ log_file_level = settings.log_file_level
 repository = settings.repository
 stores = settings.stores
 supply_file = settings.supply_file
+output_file = settings.output_file
