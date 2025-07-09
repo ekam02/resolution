@@ -109,10 +109,6 @@ class Resolution(SQLModel):
             )
         if isinstance(data["end_date"], str):
             data["end_date"] = parse(data["end_date"])
-        data["end_date"] = datetime(
-            data["end_date"].year, data["end_date"].month, data["end_date"].day,
-            23, 59, 59, 999999
-        )
 
         # Evalúa atributo `start_date`
         if not data.get("start_date"):
