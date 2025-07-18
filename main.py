@@ -4,6 +4,7 @@ from pathlib import Path
 from config import log_console_level, log_file_level, output_file, supply_file, output_dir
 from config.logger_config import setup_logger
 from models import INSERT_BILLER_RESOLUTION, UPDATE_BILLER_RESOLUTION, UPDATE_BILLER_RETURNED_RESOLUTION
+from utils.checker import check_all_databases
 from utils.finder import get_max_resolution_id, find_id_returned_resolution_by_store, get_resolution_message
 from utils.uploader import upload_resolutions
 
@@ -13,8 +14,10 @@ logger = setup_logger(__name__, console_level=log_console_level, file_level=log_
 
 def main(_supply_file: Path = supply_file):
     try:
+        if not all(check_all_databases().values()):
+            raise ValueError("No se han encontrado todas las bases de datos disponibles.")
         resolutions = upload_resolutions(_supply_file)
-        # Se cargaron resoluciones
+        logger.info(f"Se han cargado {len(resolutions)} resoluciones desde el archivo: {_supply_file.name}.")
         if resolutions:
             with open(output_file, "+w", encoding="utf-8") as file:
                 logger.info(f"Se cargaron {len(resolutions)} resoluciones.")
