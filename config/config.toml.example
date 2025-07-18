@@ -9,6 +9,8 @@ supply_file = ""  # Supply File Name
 [data_translation]
 "Resolución" = "resolution"
 "Tipo" = "doc_type"
+"T.Resolucion" = "doc_type"
+"T.Factura" = "doc_type"
 "Válida desde" = "start_date"
 "Válida hasta" = "end_date"
 "Tienda" = "store"

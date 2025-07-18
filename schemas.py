@@ -10,6 +10,7 @@ from sqlmodel import SQLModel
 
 from config import biller_engine, data_translation, document_type_translation
 from models import QUERY_BILLER_STORE_BY_PREFIX, QUERY_BILLER_PREVIOUS_RESOLUTION_ID
+from utils.finder import get_resolution_message
 
 
 class StoreError(Exception):
@@ -45,9 +46,6 @@ class Resolution(SQLModel):
     @model_validator(mode='before')
     @classmethod
     def cast_data(cls, data: Any) -> Any:
-        if not len(data) == 9:
-            raise ValueError(f"Se esperan 9 columnas, pero se recibieron {len(data)}.")
-
         aux = {}
         for key, value in data.items():
             if key in data_translation:
@@ -220,17 +218,16 @@ class Resolution(SQLModel):
 
         return data
 
-    def get_resolution_message(self) -> str:
-        return (f"Resolución de Factura Electrónica Nro. {self.resolution}  "
-                f"Fecha {self.start_date.strftime('%d/%m/%Y')}  "
-                f"Prefijo {self.prefix}  "
-                f"Rango {self.start_consecutive} al {self.end_consecutive} Vigencia {self.get_months_validity()} meses.")
-
-    def get_months_validity(self) -> int:
-        return (self.end_date - self.start_date).days // 30
-
     @property
     def values(self) -> str:
+        message = get_resolution_message(
+            resolution=self.resolution,
+            start_date=self.start_date,
+            end_date=self.end_date,
+            prefix=self.prefix,
+            start_consecutive=self.start_consecutive,
+            end_consecutive=self.end_consecutive
+        )
         return (f"("
                 f"{self.id}, "
                 f"1, "
@@ -242,6 +239,6 @@ class Resolution(SQLModel):
                 f"'{self.start_date}', "
                 f"'{self.start_date}', "
                 f"'{self.end_date}', "
-                f"'{self.get_resolution_message()}', "
+                f"'{message}', "
                 f"'{self.technical_key}'"
                 f")")
